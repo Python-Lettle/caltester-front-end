@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+		<title>计算练习</title>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav" style="text-align:right;"> <a
+				class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">简单的计算练习</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-card" style="text-align: center;">
+				<h1 style="font-size:80px;" id="topic"></h1> 
+				<input type="text" class="mui-input-clear" placeholder="结果"
+					style="margin-top: 20px;" id="answer">
+				<ul class="mui-table-view mui-table-view-radio">
+					<li class="mui-table-view-cell"> <a class="mui-navigate-right">加法</a> </li>
+					<li class="mui-table-view-cell"> <a class="mui-navigate-right">减法</a> </li>
+					<li class="mui-table-view-cell"> <a class="mui-navigate-right">乘法</a> </li>
+					<li class="mui-table-view-cell"> <a class="mui-navigate-right">除法</a> </li>
+					<li class="mui-table-view-cell mui-selected"> <a class="mui-navigate-right">混合</a> </li>
+				</ul> 
+				<button class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-top: 20px;"
+					id="submit_num">确定</button>
+				<ul class="mui-table-view" style="margin-top: 20px">
+					<li class="mui-table-view-cell mui-collapse"> <a class="mui-navigate-right" href="#">答题历史</a>
+						<div class="mui-collapse-content">
+							<table border="1" style="margin: 0px auto;" id="history">
+								<tr>
+									<th>题号</th>
+									<th>题目</th>
+									<th>答案</th>
+									<th>正误</th>
+								</tr>
+							</table>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			
+			var server_name = "localhost:8081";
+			var answer_num = 0;
+			var list = document.querySelector('.mui-table-view.mui-table-view-radio');
+			list.addEventListener('selected',function(e){
+				mui.ajax('http://127.0.0.1:4523/m1/2681659-0-default/cal/question',{
+					data:{
+						mode: e.detail.el.innerHTML
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					success:function(data){
+						mui("#topic")[0].innerHTML = data.question;
+					}
+				});
+			});
+			
+			// mui.ajax('http://'+ server_name + '/cal/question',{
+			mui.ajax('http://127.0.0.1:4523/m1/2681659-0-default/cal/question',{
+				data:{
+					mode: "混合"
+				},
+				dataType:'json',//服务器返回json格式数据
+				type:'get',//HTTP请求类型
+				success:function(data){
+					mui("#topic")[0].innerHTML = data.question;
+				}
+			});
+			
+			mui("#submit_num")[0].addEventListener('click', function(e) {
+				var ans = mui("#answer")[0].value;
+				if(checkInput(ans) == true) {
+					mui.ajax('http://127.0.0.1:4523/m1/2681659-0-default/cal/judgment',{
+						data:{
+							answer: ans
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						success:function(data){
+							answer_num += 1;
+							mui("#history")[0].innerHTML += "<tr><td>"+answer_num+"</td><td>"+mui("#topic")[0].innerHTML+"</td><td>"+ans+"</td><td>"+data.result+"</td></td>"
+							if (data.result == true) {
+								mui.toast("恭喜你算对了！");
+							} else {
+								mui.toast("算错了,继续努力！");
+							}
+							mui("#answer")[0].value = "";
+						}
+					});
+				} else {
+					mui.toast("请输入合理的答案");
+				}
+			});
+			
+			function checkInput(inp) {
+				if (inp == "") {
+					return false;
+				} else if (inp != parseInt(inp)) {
+					return false;
+				}
+				return true;
+			}
+		</script>
+	</body>
+</html>
