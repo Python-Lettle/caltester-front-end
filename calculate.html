@@ -17,11 +17,11 @@
 				<input type="text" class="mui-input-clear" placeholder="结果"
 					style="margin-top: 20px;" id="answer">
 				<ul class="mui-table-view mui-table-view-radio">
-					<li class="mui-table-view-cell"> <a class="mui-navigate-right">加法</a> </li>
+					<li class="mui-table-view-cell mui-selected"> <a class="mui-navigate-right">加法</a> </li>
 					<li class="mui-table-view-cell"> <a class="mui-navigate-right">减法</a> </li>
 					<li class="mui-table-view-cell"> <a class="mui-navigate-right">乘法</a> </li>
 					<li class="mui-table-view-cell"> <a class="mui-navigate-right">除法</a> </li>
-					<li class="mui-table-view-cell mui-selected"> <a class="mui-navigate-right">混合</a> </li>
+					<!-- <li class="mui-table-view-cell mui-selected"> <a class="mui-navigate-right">混合</a> </li> -->
 				</ul> 
 				<button class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-top: 20px;"
 					id="submit_num">确定</button>
@@ -45,14 +45,21 @@
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
-			
+			var self = "";
+			mui.plusReady(function() {
+				self = plus.webview.currentWebview();
+			});
+			var token = self.token;
 			var server_name = "localhost:8081";
 			var answer_num = 0;
 			var list = document.querySelector('.mui-table-view.mui-table-view-radio');
 			list.addEventListener('selected',function(e){
-				mui.ajax('http://127.0.0.1:4523/m1/2681659-0-default/cal/question',{
+				mui.ajax('http://82.157.166.28:8989/user/question',{
 					data:{
-						mode: e.detail.el.innerHTML
+						op: e.detail.el.innerHTML
+					},
+					headers: {
+						Authorization: token
 					},
 					dataType:'json',//服务器返回json格式数据
 					type:'get',//HTTP请求类型
@@ -62,10 +69,12 @@
 				});
 			});
 			
-			// mui.ajax('http://'+ server_name + '/cal/question',{
-			mui.ajax('http://127.0.0.1:4523/m1/2681659-0-default/cal/question',{
+			mui.ajax('http://82.157.166.28:8989/user/question',{
 				data:{
-					mode: "混合"
+					op: "plus"
+				},
+				headers: {
+					
 				},
 				dataType:'json',//服务器返回json格式数据
 				type:'get',//HTTP请求类型
@@ -77,7 +86,7 @@
 			mui("#submit_num")[0].addEventListener('click', function(e) {
 				var ans = mui("#answer")[0].value;
 				if(checkInput(ans) == true) {
-					mui.ajax('http://127.0.0.1:4523/m1/2681659-0-default/cal/judgment',{
+					mui.ajax('http://82.157.166.28:8989/user/question/judgment',{
 						data:{
 							answer: ans
 						},
@@ -106,6 +115,15 @@
 					return false;
 				}
 				return true;
+			}
+			
+			function getMode(name) {
+				switch(name) {
+					case "加法": return "plus";
+					case "减法": return "minus";
+					case "乘法": return "multi";
+					case "除法": return "div";
+				}
 			}
 		</script>
 	</body>
