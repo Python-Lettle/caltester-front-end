@@ -127,7 +127,7 @@
 		<script src="js/mui.enterfocus.js"></script>
 		<script>
 			mui("#login")[0].addEventListener('click', function() {
-				mui.ajax('http://82.157.166.28:8989/login',{
+				mui.ajax('http://127.0.0.1:8089/login',{
 					data:{
 						username: mui("#account")[0].value,
 						password: mui("#password")[0].value
@@ -135,17 +135,20 @@
 					dataType:'json',//服务器返回json格式数据
 					type:'post',//HTTP请求类型
 					success:function(data){
-						mui.openWindow({
-						    url:"index.html",
-						    id:"index",
-						    extras:{
-								token: data.token
-						    },
-						    show:{
-						      autoShow:true,//页面loaded事件发生后自动显示，默认为true
-						      aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
-						    }
-						});
+						if (data.code == "200") {
+							localStorage.setItem("token",data.token);
+							mui.openWindow({
+							    url:"index.html",
+							    id:"index",
+							    show:{
+							      autoShow:true,//页面loaded事件发生后自动显示，默认为true
+							      aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
+							    }
+							});
+						} else if (data.code == "400") {
+							mui.toast("登录失败，请检查用户名或密码");
+						}
+						
 					},
 					error: function(xhr,type,errorThrown){
 						mui.toast("登录失败，请检查用户名或密码");

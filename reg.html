@@ -65,59 +65,7 @@
 		</div>
 		<script src="js/mui.min.js"></script>
 		<script src="js/jquery-3.6.4.min.js"></script>
-		<script>
-			function ajax(){ 
-			  var ajaxData = { 
-			    type:arguments[0].type || "GET", 
-			    url:arguments[0].url || "", 
-			    async:arguments[0].async || "true", 
-			    data:arguments[0].data || null, 
-			    dataType:arguments[0].dataType || "text", 
-			    contentType:arguments[0].contentType || "application/x-www-form-urlencoded", 
-			    beforeSend:arguments[0].beforeSend || function(){}, 
-			    success:arguments[0].success || function(){}, 
-			    error:arguments[0].error || function(){} ,
-				Origin:"",
-				"Access-Control-Allow-Origin' " : '',
-			  } 
-			  ajaxData.beforeSend() 
-			  var xhr = createxmlHttpRequest();  
-			  xhr.responseType=ajaxData.dataType; 
-			  xhr.open(ajaxData.type,ajaxData.url,ajaxData.async);  
-			  xhr.setRequestHeader("Content-Type",ajaxData.contentType);  
-			  xhr.send(convertData(ajaxData.data));  
-			  xhr.onreadystatechange = function() {  
-			    if (xhr.readyState == 4) {  
-			      if(xhr.status == 200){ 
-			        ajaxData.success(xhr.response) 
-			      }else{ 
-			        ajaxData.error() 
-			      }  
-			    } 
-			  }  
-			} 
-			 
-			function createxmlHttpRequest() {  
-			  if (window.ActiveXObject) {  
-			    return new ActiveXObject("Microsoft.XMLHTTP");  
-			  } else if (window.XMLHttpRequest) {  
-			    return new XMLHttpRequest();  
-			  }  
-			} 
-			 
-			function convertData(data){ 
-			  if( typeof data === 'object' ){ 
-			    var convertResult = "" ;  
-			    for(var c in data){  
-			      convertResult+= c + "=" + data[c] + "&";  
-			    }  
-			    convertResult=convertResult.substring(0,convertResult.length-1) 
-			    return convertResult; 
-			  }else{ 
-			    return data; 
-			  } 
-			} 
-		</script>
+		<script src="js/util.js"></script>
 		<script>
 			mui.init();
 			var regButton = document.getElementById('reg');
@@ -130,10 +78,11 @@
 				if (passwordConfirm != passwordBox.value) {
 					plus.nativeUI.toast('密码两次输入不一致');
 					return;
+				} else if (passwordBox.value.length < 8) {
+					mui.toast("密码长度小于8,请设置更长的密码");
+					return;
 				}
-				$.ajax('http://82.157.166.28:8989/register',{
-					headers: {
-					},
+				$.ajax('http://127.0.0.1:8089/register',{
 					data:{
 						"username": mui("#account")[0].value,
 						"password": mui("#password")[0].value,
@@ -158,7 +107,7 @@
 				
 				// ajax({ 
 				// 	type:"POST", 
-				// 	url:'http://127.0.0.1/register', 
+				// 	url:'http://127.0.0.1:8089/register', 
 				// 	dataType:"json", 
 				// 	data:{
 				// 	"username": mui("#account")[0].value,
