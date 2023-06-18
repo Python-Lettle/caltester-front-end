@@ -4,9 +4,8 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>少儿数学计算</title>
+		<title>登录-少儿数学计算</title>
 		<link href="css/mui.min.css" rel="stylesheet" />
-		<link href="css/style.css" rel="stylesheet" />
 		<style>
 			.area {
 				margin: 20px auto 0px auto;
@@ -124,8 +123,12 @@
 			</div>
 		</div>
 		<script src="js/mui.min.js"></script>
-		<script src="js/mui.enterfocus.js"></script>
+		<!-- <script src="js/mui.enterfocus.js"></script> -->
 		<script>
+			if (localStorage.getItem("regsuccess") != null) {
+				mui.toast("注册成功");
+			}
+			localStorage.removeItem("regsuccess");
 			mui("#login")[0].addEventListener('click', function() {
 				mui.ajax('http://127.0.0.1:8089/login',{
 					data:{
@@ -137,6 +140,7 @@
 					success:function(data){
 						if (data.code == "200") {
 							localStorage.setItem("token",data.token);
+							localStorage.setItem("username",mui("#account")[0].value);
 							mui.openWindow({
 							    url:"index.html",
 							    id:"index",

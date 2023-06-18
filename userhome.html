@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>用户中心-少儿数学计算</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+
+		<style>
+			.mui-card #username {
+				padding: 0px;
+				margin: 0px;
+				width: 100%;
+				/*border-top: solid;*/
+				text-align: center;
+				/*设置inline-height属性可以让div里面的文字垂直居中*/
+				/*line-height: 70px;*/
+				font-size: 30px;
+			}
+
+			.mui-card #userinfo {
+				margin-left: 3%;
+			}
+
+			.mui-card .title {
+				text-align: center;
+				font-size: 30px;
+			}
+
+			.mui-card #exit {
+				width: auto;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="text-align:right;"> 
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">用户中心</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-card">
+				<h1 id="username"></h1>
+				<h3 id="userinfo"></h3>
+			</div>
+			
+			<div class="mui-card">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell mui-collapse mui-active"> 
+						<a class="mui-navigate-right" href="#">错题列表</a>
+						<ul class="mui-table-view" id="wrong-list">
+					
+						</ul>
+					</li>
+				</ul>	
+			</div>
+
+			<button type="button" class="mui-btn mui-btn-block mui-btn-danger" style="width: 90%; margin-left: 5%;" onclick="logout()">退出登录</button>
+		</div>
+		<script src="js/mui.js"></script>
+		<script>
+			document.getElementById('username').innerHTML = localStorage.getItem("username");
+			mui.ajax('http://127.0.0.1:8089/user/wrong-list',{
+				headers: {
+					Authorization: localStorage.getItem("token")
+				},
+				data:{
+					page: 0
+				},
+				dataType:'json',//服务器返回json格式数据
+				type:'get',//HTTP请求类型
+				success:function(data){
+					if (data.code == "200") {
+						var table = document.getElementById("wrong-list");
+						var records = data.data.record;
+
+						for (var i=0; i<records.length; i++) {
+							table.innerHTML += "<li class='mui-table-view-cell'>" + records[i].num1 + " "+ records[i].op + " " + records[i].num2 + " = "+ records[i].ans +"</li>";
+						}
+						
+					}
+				},
+				error: function(xhr,type,errorThrown){
+					mui.toast("获取用户错题列表失败");
+				}
+			});
+			mui.ajax('http://127.0.0.1:8089/user/rank',{
+				headers: {
+					Authorization: localStorage.getItem("token")
+				},
+				dataType:'json',//服务器返回json格式数据
+				type:'get',//HTTP请求类型
+				success:function(data){
+					if (data.code == "200") {
+						document.getElementById("userinfo").innerHTML = "积分: " + data.data.own_points;
+					}
+				},
+				error: function(xhr,type,errorThrown){
+					mui.toast("获取用户积分失败");
+				}
+			});
+			function logout() {
+				mui.confirm("是否要退出登录","退出确认",["取消","确定"],function (e) {
+					mui.ajax('http://127.0.0.1:8089/user/logout',{
+						headers: {
+							Authorization: localStorage.getItem("token")
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'get',//HTTP请求类型
+						success:function(data){
+							if (data.code == "200") {
+								if (e.index == 1) {
+									localStorage.removeItem("token");
+									localStorage.removeItem("username");
+									mui.openWindow({
+										url:"index.html",
+										id:"index",
+										show:{
+										autoShow:true,//页面loaded事件发生后自动显示，默认为true
+										aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
+										}
+									});
+								}
+							}
+						},
+					});
+				}, 'div');
+			}
+		</script>
+	</body>
+
+</html>

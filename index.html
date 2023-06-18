@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport"
 			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-		<title>少儿数学计算</title>
+		<title>主页-少儿数学计算</title>
 	</head>
 	<body>
 		<header class="mui-bar mui-bar-nav" style="text-align:right;"> 
@@ -19,14 +19,13 @@
 						<a class="mui-navigate-right" href="#">学习</a>
 						<div class="mui-collapse-content"> 
 							<button type="button" class="mui-btn mui-btn-green mui-btn-outlined" id="calculate" onclick="cal_page()">简单计算练习</button>
-							<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined" id="word">背单词</button> 	
+							<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined" id="word" onclick="rank()">排行榜</button> 	
 						</div>
 					</li>
 					<li class="mui-table-view-cell mui-collapse"> <a class="mui-navigate-right" href="#">关于作者</a>
 						<div class="mui-collapse-content">
-							<p style="font-weight: bold;">作者:Lettle</p>
-							<p style="font-weight: bold;">QQ:1071445082</p>
-							<p style="font-weight: bold;">邮箱:1071445082@qq.com</p>
+							<p style="font-weight: bold;">前端：洪宇轩</p>
+							<p style="font-weight: bold;">后端：周佟宇修</p>
 						</div>
 					</li>
 				</ul>
@@ -40,6 +39,7 @@
 			mui.init();
 			var token = localStorage.getItem("token");
 			function user() {
+				token = localStorage.getItem("token");
 				if (token == null) {
 					mui.openWindow({
 					    url:"login.html",
@@ -50,11 +50,19 @@
 					    }
 					});
 				} else {
-					mui.toast("您已经登录");
+					mui.openWindow({
+					    url:"userhome.html",
+					    id:"userhome",
+					    show:{
+					      autoShow:true,//页面loaded事件发生后自动显示，默认为true
+					      aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
+					    }
+					});
 				}
 			}
 			
 			function cal_page() {
+				token = localStorage.getItem("token");
 				if (token != null) {
 					mui.openWindow({
 					    url:"calculate.html",
@@ -83,6 +91,22 @@
 					      //   height:waiting-dialog-height,//等待框背景区域高度，默认根据内容自动计算合适高度
 					      // }
 					    // }
+					});
+				} else {
+					mui.toast("请先登录");
+				}
+			}
+			
+			function rank() {
+				token = localStorage.getItem("token");
+				if (token != null) {
+					mui.openWindow({
+					    url:"rank.html",
+					    id:"rank",
+					    show:{
+					      autoShow:true,//页面loaded事件发生后自动显示，默认为true
+					      aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
+					    }
 					});
 				} else {
 					mui.toast("请先登录");

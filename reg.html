@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>少儿数学计算</title>
+		<title>注册-少儿数学计算</title>
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<style>
 			.area {
@@ -90,7 +90,7 @@
 					},
 					type:'post',//HTTP请求类型
 					success:function(data){
-						mui.toast("注册成功");
+						localStorage.setItem("regsuccess", "1");
 						mui.openWindow({
 							url:"login.html",
 							id:"login",
@@ -104,34 +104,6 @@
 						mui.toast("注册失败");
 					}
 				});
-				
-				// ajax({ 
-				// 	type:"POST", 
-				// 	url:'http://127.0.0.1:8089/register', 
-				// 	dataType:"json", 
-				// 	data:{
-				// 	"username": mui("#account")[0].value,
-				// 	"password": mui("#password")[0].value,
-				// 	"re-password": mui("#password_confirm")[0].value
-				// 	},
-				// 	beforeSend:function(){ 
-				// 	//some js code 
-				// 	}, 
-				// 	success:function(data){
-				// 		mui.toast("注册成功");
-				// 		mui.openWindow({
-				// 			url:"login.html",
-				// 			id:"login",
-				// 			show:{
-				// 			  autoShow:true,//页面loaded事件发生后自动显示，默认为true
-				// 			  aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
-				// 			}
-				// 		});
-				// 	},
-				// 	error:function(){ 
-				// 		mui.toast("注册失败");
-				// 	} 
-				// }) 
 			});
 			
 			

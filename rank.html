@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>排行榜-少儿数学计算</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+
+		<style>
+			.mui-card #username {
+				padding: 0px;
+				margin: 0px;
+				width: 100%;
+				/*border-top: solid;*/
+				text-align: center;
+				/*设置inline-height属性可以让div里面的文字垂直居中*/
+				/*line-height: 70px;*/
+				font-size: 30px;
+			}
+
+            .playerinfo {
+                text-align: center;
+            }
+
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="text-align:right;"> 
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">排行榜</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-card">
+                <ul class="mui-table-view" id="rank-list">
+					
+                </ul>
+			</div>
+		</div>
+		<script src="js/mui.js"></script>
+		<script>
+			mui.ajax('http://127.0.0.1:8089/user/rank',{
+				headers: {
+					Authorization: localStorage.getItem("token")
+				},
+				data:{
+					page: 0
+				},
+				dataType:'json',//服务器返回json格式数据
+				type:'get',//HTTP请求类型
+				success:function(data){
+					if (data.code == "200") {
+						var table = document.getElementById("rank-list");
+						var records = data.data.rank;
+
+						for (var i=0; i<records.length; i++) {
+							table.innerHTML += "<li class='mui-table-view-cell playerinfo'>" + (i+1) + ".  " + records[i].username + " : " + records[i].points +"</li>";
+						}
+						
+					}
+				},
+				error: function(xhr,type,errorThrown){
+					mui.toast("获取用户错题列表失败");
+				}
+			});
+		</script>
+	</body>
+
+</html>

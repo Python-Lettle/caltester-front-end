@@ -13,115 +13,109 @@
 		</header>
 		<div class="mui-content">
 			<div class="mui-card" style="text-align: center;">
-				<h1 style="font-size:80px;" id="topic"></h1> 
+				<h1 style="font-size:80px;" id="question"></h1> 
 				<input type="text" class="mui-input-clear" placeholder="结果"
 					style="margin-top: 20px;" id="answer">
 				<ul class="mui-table-view mui-table-view-radio">
-					<li class="mui-table-view-cell mui-selected">加法</li>
-					<li class="mui-table-view-cell">减法</li>
-					<li class="mui-table-view-cell">乘法</li>
-					<li class="mui-table-view-cell">除法</li>
+					<li class="mui-table-view-cell mui-selected"> <a class="mui-navigate-right">加法</a> </li>
+					<li class="mui-table-view-cell"> <a class="mui-navigate-right">减法</a> </li>
+					<li class="mui-table-view-cell"> <a class="mui-navigate-right">乘法</a> </li>
+					<li class="mui-table-view-cell"> <a class="mui-navigate-right">除法</a> </li>
 					<!-- <li class="mui-table-view-cell mui-selected"> <a class="mui-navigate-right">混合</a> </li> -->
 				</ul> 
 				<button class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-top: 20px;"
 					id="submit_num">确定</button>
-				<ul class="mui-table-view" style="margin-top: 20px">
-					<li class="mui-table-view-cell mui-collapse"> <a class="mui-navigate-right" href="#">答题历史</a>
-						<div class="mui-collapse-content">
-							<table border="1" style="margin: 0px auto;" id="history">
-								<tr>
-									<th>题号</th>
-									<th>题目</th>
-									<th>答案</th>
-									<th>正误</th>
-								</tr>
-							</table>
-						</div>
-					</li>
-				</ul>
 			</div>
 		</div>
 		<script type="text/javascript" src="js/mui.min.js"></script>
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
-			var token = localStorage.getItem("token");
-			var answer_num = 0;
-			var list = document.querySelector('.mui-table-view.mui-table-view-radio');
-			list.addEventListener('selected',function(e){
-				// console.log(e.detail.el);
-				var ch=document.getElementsByName("radio1");
-				// for (var i = 0; i < ch.length; i++) {
-				// 	if (ch[i].checked) {
-				// 		//弹框提示
-				// 		mui.toast(ch[i].value+':'+ch[i].checked,{duration:'short'})
-				// 	} 
-				// }
-				mui.ajax('http://127.0.0.1:8089/user/question',{
-					data:{
-						op: getMode(e.detail.el.innerHTML)
-					},
-					headers: {
-						Authorization: token,
-						'Access-Control-Allow-Origin':'*' 
-					},
-					dataType:'json',//服务器返回json格式数据
-					type:'get',//HTTP请求类型
-					success:function(data){
-						if (data.code == '30001') {
-							mui.toast(data.msg);
-						} else if (data.code == '30002') {
-							mui.toast(data.msg);
-						}
-						mui("#topic")[0].innerHTML = data.question;
-					}
-				});
+			var self = "";
+			mui.plusReady(function() {
+				self = plus.webview.currentWebview();
 			});
-			
-			mui.ajax('http://127.0.0.1:8089/user/question?op=plus',{
-				data:{
-					op: "plus"
-				},
-				headers: {
-					Authorization: token
-				},
-				dataType:'json',//服务器返回json格式数据
-				type:'get',//HTTP请求类型
-				success:function(data){
-					if (data.code == '30001') {
-						mui.toast(data.msg);
-					} else if (data.code == '30002') {
-						mui.toast(data.msg);
-					}
-					mui("#topic")[0].innerHTML = data.question;
-				}
+			var token = localStorage.getItem("token");
+			var list = document.querySelector('.mui-table-view.mui-table-view-radio');
+
+			var operator = 'plus';
+			// 获取到的题目信息
+			var question_data = null;
+			getQuestions();
+			// 已经回答题目
+			var answers = [[],[],[],[],[],[],[],[],[],[]];
+			// 正在回答的题目下标(0-9)
+			var question_index = 0;
+
+			// 题目类型切换
+			list.addEventListener('selected',function(e){
+				token = localStorage.getItem("token");
+				operator = getMode(e.detail.el.innerHTML);
+				question_index = 0;
+				question_data = getQuestions();
+				answers = [[],[],[],[],[],[],[],[],[],[]];
 			});
 			
 			mui("#submit_num")[0].addEventListener('click', function(e) {
 				var ans = mui("#answer")[0].value;
 				if(checkInput(ans) == true) {
-					mui.ajax('http://127.0.0.1:8089/user/question/judgment',{
-						data:{
-							answer: ans
-						},
-						dataType:'json',//服务器返回json格式数据
-						type:'post',//HTTP请求类型
-						success:function(data){
-							answer_num += 1;
-							mui("#history")[0].innerHTML += "<tr><td>"+answer_num+"</td><td>"+mui("#topic")[0].innerHTML+"</td><td>"+ans+"</td><td>"+data.result+"</td></td>"
-							if (data.result == true) {
-								mui.toast("恭喜你算对了！");
-							} else {
-								mui.toast("算错了,继续努力！");
+					answers[question_index] = [question_data.questions[question_index].Num1, 
+						question_data.questions[question_index].Num2,
+						ans];
+					question_index += 1;
+
+					// 是否可以提交一批答案
+					if (question_index >= 10) {
+						mui.ajax('http://127.0.0.1:8089/user/judge',{
+							data:{
+								op: operator,
+								answer: answers
+							},
+							dataType:'json',//服务器返回json格式数据
+							type:'post',//HTTP请求类型
+							success:function(data){
+								if (data.code == 200) {
+									mui.toast("恭喜你算对了"+data.data+"题!");
+								} else if (data.code == 30001) {
+									mui.toast(data.msg);
+								}
 							}
-							mui("#answer")[0].value = "";
-						}
-					});
+						});
+						question_index = 0;
+					}
+
+					showQuestion();
 				} else {
 					mui.toast("请输入合理的答案");
 				}
+				mui("#answer")[0].value = "";
 			});
+
+			function showQuestion() {
+				document.getElementById("question").innerHTML = 
+					question_data.questions[question_index].Num1 + question_data.op +
+					question_data.questions[question_index].Num2;
+			}
 			
+			// 获取一些题目
+			function getQuestions() {
+				mui.ajax('http://127.0.0.1:8089/user/question',{
+					data:{
+						op: operator
+					},
+					headers: {
+						Authorization: localStorage.getItem("token")
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					success:function(data){
+						question_data = data.data;
+						showQuestion();
+					}
+				});
+			}
+
+			// 检查用户的输入是否正确
 			function checkInput(inp) {
 				if (inp == "") {
 					return false;
@@ -131,12 +125,22 @@
 				return true;
 			}
 			
+			// 获取用户选择的题目类型s
 			function getMode(name) {
 				switch(name) {
 					case "加法": return "plus";
 					case "减法": return "minus";
 					case "乘法": return "multi";
 					case "除法": return "div";
+				}
+			}
+
+			function getOp(name) {
+				switch(name) {
+					case "plus": return "+";
+					case "minus": return "-";
+					case "multi": return "x";
+					case "div": return "/";
 				}
 			}
 		</script>
