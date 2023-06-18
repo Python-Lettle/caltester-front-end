@@ -61,7 +61,7 @@
 				if(checkInput(ans) == true) {
 					answers[question_index] = [question_data.questions[question_index].Num1, 
 						question_data.questions[question_index].Num2,
-						ans];
+						parseInt(ans)];
 					question_index += 1;
 
 					// 是否可以提交一批答案
@@ -69,7 +69,10 @@
 						mui.ajax('http://127.0.0.1:8089/user/judge',{
 							data:{
 								op: operator,
-								answer: answers
+								"answer[]": JSON.stringify(answers)
+							},
+							headers: {
+								Authorization: localStorage.getItem("token")
 							},
 							dataType:'json',//服务器返回json格式数据
 							type:'post',//HTTP请求类型
