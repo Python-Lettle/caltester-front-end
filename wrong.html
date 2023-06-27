@@ -57,18 +57,18 @@
 			var total_question_num = 0;
 			getQuestions();
 			// 已经回答题目
-			var answers = [[],[],[],[],[],[],[],[],[],[]];
+			var answers = [];
 			// 正在回答的题目下标(0-9)
 			var question_index = 0;
 			mui("#progress").progressbar({progress:question_index*total_question_num}).show();
 			mui("#submit_num")[0].addEventListener('click', function(e) {
 				var ans = mui("#answer")[0].value;
 				if(checkInput(ans) == true) {
-					answers[question_index] = [question_data.questions[question_index].Num1, 
-						question_data.questions[question_index].Num2,
-						parseInt(ans)];
+					answers.push([question_data.questions[question_index].id, [question_data.questions[question_index].num1, 
+						question_data.questions[question_index].num2,
+						parseInt(ans)], question_data.questions[question_index].op]);
 					question_index += 1;
-					mui("#progress").progressbar().setProgress(question_index*10);
+					mui("#progress").progressbar().setProgress(100 * (question_index/total_question_num));
 
 					// 是否可以提交一批答案
 					if (question_index >= total_question_num) {
@@ -85,6 +85,7 @@
 								if (data.code == 30001) {
 									mui.toast(data.msg);
 								}
+								answers = [];
 							}
 						});
 						question_index = 0;
