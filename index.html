@@ -19,13 +19,14 @@
 						<a class="mui-navigate-right" href="#">学习</a>
 						<div class="mui-collapse-content"> 
 							<button type="button" class="mui-btn mui-btn-green mui-btn-outlined" id="calculate" onclick="cal_page()">简单计算练习</button>
+							<button type="button" class="mui-btn mui-btn-danger mui-btn-outlined" id="wrong" onclick="wrong_page()">错题重做</button>
 							<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined" id="word" onclick="rank()">排行榜</button> 	
 						</div>
 					</li>
 					<li class="mui-table-view-cell mui-collapse"> <a class="mui-navigate-right" href="#">关于作者</a>
 						<div class="mui-collapse-content">
-							<p style="font-weight: bold;">前端：洪宇轩</p>
-							<p style="font-weight: bold;">后端：周佟宇修</p>
+							<p style="font-weight: bold;">前端：洪宇轩 王煜梓</p>
+							<p style="font-weight: bold;">后端：周佟宇修 朱家树</p>
 						</div>
 					</li>
 				</ul>
@@ -91,6 +92,22 @@
 					      //   height:waiting-dialog-height,//等待框背景区域高度，默认根据内容自动计算合适高度
 					      // }
 					    // }
+					});
+				} else {
+					mui.toast("请先登录");
+				}
+			}
+
+			function wrong_page() {
+				token = localStorage.getItem("token");
+				if (token != null) {
+					mui.openWindow({
+					    url:"wrong.html",
+					    id:"wrong",
+					    show:{
+					      autoShow:true,//页面loaded事件发生后自动显示，默认为true
+					      aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
+					    }
 					});
 				} else {
 					mui.toast("请先登录");

@@ -4,7 +4,7 @@
 		<meta charset="utf-8" />
 		<meta name="viewport"
 			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-		<title>计算练习</title>
+		<title>错题练习</title>
 
 		<style>
 			.rule-block {
@@ -17,7 +17,7 @@
 	<body>
 		<header class="mui-bar mui-bar-nav" style="text-align:right;"> <a
 				class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">简单的计算练习</h1>
+			<h1 class="mui-title">错题练习</h1>
 		</header>
 		<div class="mui-content">
 			<div class="mui-card" style="text-align: center;">
@@ -31,22 +31,12 @@
 					id="submit_num">确定</button>
 			</div>
 
-			<div class="mui-card" style="text-align: center;">
-				<ul class="mui-table-view mui-table-view-radio">
-					<li class="mui-table-view-cell mui-selected"> <a class="mui-navigate-right">加法</a> </li>
-					<li class="mui-table-view-cell"> <a class="mui-navigate-right">减法</a> </li>
-					<li class="mui-table-view-cell"> <a class="mui-navigate-right">乘法</a> </li>
-					<li class="mui-table-view-cell"> <a class="mui-navigate-right">除法</a> </li>
-					<!-- <li class="mui-table-view-cell mui-selected"> <a class="mui-navigate-right">混合</a> </li> -->
-				</ul> 
-			</div>
-
 			<div class="mui-card">
 				<h1 style="text-align: center;">规则</h1>
 				<div class="rule-block">
 					<div>
 						<p>1. 除法取整数部分，例如 73/27 = 2, 不考虑余数部分</p>
-						<p>2. 每回答10题, 系统会提示正确题数, 此时用户可获得积分</p>	
+						<p>2. 错题将不会再记入积分</p>	
 					</div>
 				</div>
 			</div>
@@ -64,35 +54,13 @@
 			var operator = 'plus';
 			// 获取到的题目信息
 			var question_data = null;
+			var total_question_num = 0;
 			getQuestions();
 			// 已经回答题目
 			var answers = [[],[],[],[],[],[],[],[],[],[]];
 			// 正在回答的题目下标(0-9)
 			var question_index = 0;
-			mui("#progress").progressbar({progress:question_index*10}).show();
-
-			// 题目类型切换
-			// list.addEventListener('selected',function(e){
-			// 	token = localStorage.getItem("token");
-			// 	operator = getMode(e.detail.el.innerText);
-			// 	// mui.toast(e.detail.el.innerText);
-			// 	question_index = 0;
-			// 	question_data = getQuestions();
-			// 	answers = [[],[],[],[],[],[],[],[],[],[]];
-			// });
-
-			$(".mui-table-view-cell").click(function(){
-				token = localStorage.getItem("token");
-				operator = getMode($(this).text());
-				console.log($(this).text());
-				question_index = 0;
-				question_data = getQuestions();
-				answers = [[],[],[],[],[],[],[],[],[],[]];
-				mui("#progress").progressbar().setProgress(0);
-			});
-
-
-			
+			mui("#progress").progressbar({progress:question_index*total_question_num}).show();
 			mui("#submit_num")[0].addEventListener('click', function(e) {
 				var ans = mui("#answer")[0].value;
 				if(checkInput(ans) == true) {
@@ -103,10 +71,9 @@
 					mui("#progress").progressbar().setProgress(question_index*10);
 
 					// 是否可以提交一批答案
-					if (question_index >= 10) {
-						mui.ajax('http://lettle.cn:8089/user/judge',{
+					if (question_index >= total_question_num) {
+						mui.ajax('http://lettle.cn:8089/user/wrong-judge',{
 							data:{
-								op: operator,
 								answers: JSON.stringify(answers)
 							},
 							headers: {
@@ -115,9 +82,7 @@
 							dataType:'json',//服务器返回json格式数据
 							type:'post',//HTTP请求类型
 							success:function(data){
-								if (data.code == 200) {
-									mui.toast("恭喜你算对了"+data.data+"题!");
-								} else if (data.code == 30001) {
+								if (data.code == 30001) {
 									mui.toast(data.msg);
 								}
 							}
@@ -137,16 +102,13 @@
 
 			function showQuestion() {
 				document.getElementById("question").innerHTML = 
-					question_data.questions[question_index].Num1 + question_data.op +
-					question_data.questions[question_index].Num2;
+					question_data.questions[question_index].num1 + question_data.questions[question_index].op +
+					question_data.questions[question_index].num2;
 			}
 			
 			// 获取一些题目
 			function getQuestions() {
-				mui.ajax('http://lettle.cn:8089/user/question',{
-					data:{
-						op: operator
-					},
+				mui.ajax('http://lettle.cn:8089/user/wrong-redo',{
 					headers: {
 						Authorization: localStorage.getItem("token")
 					},
@@ -154,6 +116,7 @@
 					type:'get',//HTTP请求类型
 					success:function(data){
 						question_data = data.data;
+						total_question_num = question_data.count;
 						showQuestion();
 					}
 				});

@@ -60,12 +60,12 @@
 		<script src="js/mui.js"></script>
 		<script>
 			document.getElementById('username').innerHTML = localStorage.getItem("username");
-			mui.ajax('http://127.0.0.1:8089/user/wrong-list',{
+			mui.ajax('http://lettle.cn:8089/user/wrong-list',{
 				headers: {
 					Authorization: localStorage.getItem("token")
 				},
 				data:{
-					page: 0
+					page: 1
 				},
 				dataType:'json',//服务器返回json格式数据
 				type:'get',//HTTP请求类型
@@ -84,7 +84,7 @@
 					mui.toast("获取用户错题列表失败");
 				}
 			});
-			mui.ajax('http://127.0.0.1:8089/user/rank',{
+			mui.ajax('http://lettle.cn:8089/user/rank',{
 				headers: {
 					Authorization: localStorage.getItem("token")
 				},
@@ -100,30 +100,34 @@
 				}
 			});
 			function logout() {
-				mui.confirm("是否要退出登录","退出确认",["取消","确定"],function (e) {
-					mui.ajax('http://127.0.0.1:8089/user/logout',{
-						headers: {
-							Authorization: localStorage.getItem("token")
-						},
-						dataType:'json',//服务器返回json格式数据
-						type:'get',//HTTP请求类型
-						success:function(data){
-							if (data.code == "200") {
-								if (e.index == 1) {
-									localStorage.removeItem("token");
-									localStorage.removeItem("username");
-									mui.openWindow({
-										url:"index.html",
-										id:"index",
-										show:{
-										autoShow:true,//页面loaded事件发生后自动显示，默认为true
-										aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
-										}
-									});
+				mui.confirm("是否要退出登录","退出确认",["确定","取消"],function (e) {
+					if(e.index == 0) {  
+						mui.ajax('http://lettle.cn:8089/user/logout',{
+							headers: {
+								Authorization: localStorage.getItem("token")
+							},
+							dataType:'json',//服务器返回json格式数据
+							type:'get',//HTTP请求类型
+							success:function(data){
+								if (data.code == "200") {
+									if (e.index == 0) {
+										mui.openWindow({
+											url:"index.html",
+											id:"index",
+											show:{
+											autoShow:true,//页面loaded事件发生后自动显示，默认为true
+											aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
+											}
+										});
+									}
 								}
 							}
-						},
-					});
+						});
+						localStorage.removeItem("token");
+						localStorage.removeItem("username");
+					}else{  
+						//取消  
+					} 
 				}, 'div');
 			}
 		</script>

@@ -82,7 +82,7 @@
 					mui.toast("密码长度小于8,请设置更长的密码");
 					return;
 				}
-				$.ajax('http://127.0.0.1:8089/register',{
+				$.ajax('http://lettle.cn:8089/register',{
 					data:{
 						"username": mui("#account")[0].value,
 						"password": mui("#password")[0].value,
@@ -101,7 +101,7 @@
 						});
 					},
 					error: function() {
-						mui.toast("注册失败");
+						mui.toast("与服务器通信失败");
 					}
 				});
 			});

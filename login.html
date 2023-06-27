@@ -130,7 +130,7 @@
 			}
 			localStorage.removeItem("regsuccess");
 			mui("#login")[0].addEventListener('click', function() {
-				mui.ajax('http://127.0.0.1:8089/login',{
+				mui.ajax('http://lettle.cn:8089/login',{
 					data:{
 						username: mui("#account")[0].value,
 						password: mui("#password")[0].value
@@ -155,7 +155,7 @@
 						
 					},
 					error: function(xhr,type,errorThrown){
-						mui.toast("登录失败，请检查用户名或密码");
+						mui.toast("与服务器通信失败");
 					}
 				});
 			});
