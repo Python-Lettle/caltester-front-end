@@ -149,8 +149,8 @@
 							      aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
 							    }
 							});
-						} else if (data.code == "400") {
-							mui.toast("登录失败，请检查用户名或密码");
+						} else  {
+							mui.toast(data.msg);
 						}
 						
 					},

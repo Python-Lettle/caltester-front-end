@@ -27,18 +27,20 @@
 
 	<body>
 		<header class="mui-bar mui-bar-nav" style="text-align:right;"> 
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" href="/"></a>
 			<h1 class="mui-title">排行榜</h1>
 		</header>
 
 		<div class="mui-content">
+			<h4 style="text-align: center;" id="myrank">我的排名: </h2>
 			<div class="mui-card">
                 <ul class="mui-table-view" id="rank-list">
 					
                 </ul>
 			</div>
 		</div>
-		<script src="js/mui.js"></script>
+		<script src="js/mui.min.js"></script>
+		<script src="js/pageInit.js"></script>
 		<script>
 			mui.ajax('http://lettle.cn:8089/user/rank',{
 				headers: {
@@ -58,6 +60,7 @@
 							table.innerHTML += "<li class='mui-table-view-cell playerinfo'>" + (i+1) + ".  " + records[i].username + " : " + records[i].points +"</li>";
 						}
 						
+						document.getElementById("myrank").innerText += '';
 					}
 				},
 				error: function(xhr,type,errorThrown){

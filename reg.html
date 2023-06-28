@@ -37,7 +37,7 @@
 
 	<body>
 		<header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" href="/login.html"></a>
 			<h1 class="mui-title">注册</h1>
 		</header>
 		<div class="mui-content">
@@ -65,9 +65,8 @@
 		</div>
 		<script src="js/mui.min.js"></script>
 		<script src="js/jquery-3.6.4.min.js"></script>
-		<script src="js/util.js"></script>
+		<script type="text/javascript" src="js/pageInit.js"></script>
 		<script>
-			mui.init();
 			var regButton = document.getElementById('reg');
 			var accountBox = document.getElementById('account');
 			var passwordBox = document.getElementById('password');
@@ -76,10 +75,10 @@
 			mui("#reg")[0].addEventListener('tap', function(event) {
 				var passwordConfirm = passwordConfirmBox.value;
 				if (passwordConfirm != passwordBox.value) {
-					plus.nativeUI.toast('密码两次输入不一致');
+					mui.alert('密码两次输入不一致', "注册信息有误", "确定", function() {}, 'div');
 					return;
 				} else if (passwordBox.value.length < 8) {
-					mui.toast("密码长度小于8,请设置更长的密码");
+					mui.alert("密码长度小于8,请设置更长的密码", "注册信息有误", "确定", function() {}, 'div');
 					return;
 				}
 				$.ajax('http://lettle.cn:8089/register',{
@@ -90,18 +89,23 @@
 					},
 					type:'post',//HTTP请求类型
 					success:function(data){
-						localStorage.setItem("regsuccess", "1");
-						mui.openWindow({
-							url:"login.html",
-							id:"login",
-							show:{
-							  autoShow:true,//页面loaded事件发生后自动显示，默认为true
-							  aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
-							}
-						});
+						if (data.code != 200) {
+							mui.alert(data.msg, "注册信息有误", "确定", function() {}, 'div');
+						} else {
+							localStorage.setItem("regsuccess", "1");
+							mui.openWindow({
+								url:"login.html",
+								id:"login",
+								show:{
+									autoShow:true,//页面loaded事件发生后自动显示，默认为true
+									aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
+								}
+							});
+						}
+						
 					},
 					error: function() {
-						mui.toast("与服务器通信失败");
+						mui.alert("与服务器通信失败", "连接错误", "确定", function(){}, 'div');
 					}
 				});
 			});

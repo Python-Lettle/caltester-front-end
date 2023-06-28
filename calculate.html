@@ -15,8 +15,8 @@
 		</style>
 	</head>
 	<body>
-		<header class="mui-bar mui-bar-nav" style="text-align:right;"> <a
-				class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<header class="mui-bar mui-bar-nav" style="text-align:right;"> 
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" href="/"></a>
 			<h1 class="mui-title">简单的计算练习</h1>
 		</header>
 		<div class="mui-content">
@@ -54,11 +54,10 @@
 		<script>window.FastClick = true;</script>
 		<script type="text/javascript" src="js/jquery-3.6.4.min.js"></script>
 		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/pageInit.js"></script>
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<script type="text/javascript" charset="utf-8">
-			mui.init();
 			
-			var token = localStorage.getItem("token");
 			var list = document.querySelector('.mui-table-view.mui-table-view-radio');
 
 			var operator = 'plus';
@@ -116,9 +115,9 @@
 							type:'post',//HTTP请求类型
 							success:function(data){
 								if (data.code == 200) {
-									mui.toast("恭喜你算对了"+data.data+"题!");
+									mui.alert("恭喜你算对了"+data.data+"题!", "提交成功", "确定", function() {}, 'div');
 								} else if (data.code == 30001) {
-									mui.toast(data.msg);
+									mui.alert(data.msg, "提交失败", "确定",  function() {}, 'div');
 								}
 							}
 						});
@@ -130,14 +129,14 @@
 
 					showQuestion();
 				} else {
-					mui.toast("请输入合理的答案");
+					mui.alert("请输入合理的答案", "输入有误", "确定", function(){}, 'div');
 				}
 				mui("#answer")[0].value = "";
 			});
 
 			function showQuestion() {
 				document.getElementById("question").innerHTML = 
-					question_data.questions[question_index].Num1 + question_data.op +
+					question_data.questions[question_index].Num1 + getShowOp(question_data.op) +
 					question_data.questions[question_index].Num2;
 			}
 			
@@ -188,6 +187,15 @@
 					case "div": return "/";
 				}
 			}
+
+			function getShowOp(name) {
+				switch(name) {
+					case "*": return "×";
+					case "/": return "÷";
+				}
+				return name;
+			}
+
 
 			function trimAll(ele){
 				if(typeof ele === 'string'){

@@ -15,8 +15,8 @@
 		</style>
 	</head>
 	<body>
-		<header class="mui-bar mui-bar-nav" style="text-align:right;"> <a
-				class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<header class="mui-bar mui-bar-nav" style="text-align:right;"> 
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" href="/"></a>
 			<h1 class="mui-title">错题练习</h1>
 		</header>
 		<div class="mui-content">
@@ -44,14 +44,10 @@
 		<script>window.FastClick = true;</script>
 		<script type="text/javascript" src="js/jquery-3.6.4.min.js"></script>
 		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/pageInit.js"></script>
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<script type="text/javascript" charset="utf-8">
-			mui.init();
-			
-			var token = localStorage.getItem("token");
 			var list = document.querySelector('.mui-table-view.mui-table-view-radio');
-
-			var operator = 'plus';
 			// 获取到的题目信息
 			var question_data = null;
 			var total_question_num = 0;
@@ -86,11 +82,17 @@
 									mui.toast(data.msg);
 								}
 								answers = [];
+								question_data = [];
+								question_index = 0;
+								total_question_num = 0;
+								document.getElementById("question").innerHTML = "";
+								getQuestions();
+								showQuestion();
 							}
 						});
 						question_index = 0;
 						setTimeout(function(){
-							mui("#progress").progressbar().setProgress(question_index*10);
+							mui("#progress").progressbar().setProgress(0);
 						}, 1000);
 					}
 
@@ -103,7 +105,7 @@
 
 			function showQuestion() {
 				document.getElementById("question").innerHTML = 
-					question_data.questions[question_index].num1 + question_data.questions[question_index].op +
+					question_data.questions[question_index].num1 + getOp(question_data.questions[question_index].op) +
 					question_data.questions[question_index].num2;
 			}
 			
@@ -118,7 +120,11 @@
 					success:function(data){
 						question_data = data.data;
 						total_question_num = question_data.count;
-						showQuestion();
+						if (total_question_num == 0) {
+							mui.toast("您没有错题！");
+						} else {
+							showQuestion();
+						}
 					}
 				});
 			}
@@ -132,25 +138,13 @@
 				}
 				return true;
 			}
-			
-			// 获取用户选择的题目类型s
-			function getMode(name) {
-				name = trimAll(name);
-				switch(name) {
-					case "加法": return "plus";
-					case "减法": return "minus";
-					case "乘法": return "multi";
-					case "除法": return "div";
-				}
-			}
 
 			function getOp(name) {
 				switch(name) {
-					case "plus": return "+";
-					case "minus": return "-";
-					case "multi": return "x";
-					case "div": return "/";
+					case "*": return "×";
+					case "/": return "÷";
 				}
+				return name;
 			}
 
 			function trimAll(ele){

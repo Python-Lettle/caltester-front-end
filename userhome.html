@@ -30,12 +30,26 @@
 			.mui-card #exit {
 				width: auto;
 			}
+
+			.mui-btn {
+				margin-top: 20px;
+			}
+
+			#wrong_collapse_list {
+				text-align: center;
+			}
+
+			#pagination {
+				display: inline-block;
+				margin: auto;
+				margin-top: 20px;
+			}
 		</style>
 	</head>
 
 	<body>
 		<header class="mui-bar mui-bar-nav" style="text-align:right;"> 
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" href="/"></a>
 			<h1 class="mui-title">用户中心</h1>
 		</header>
 		<div class="mui-content">
@@ -44,46 +58,27 @@
 				<h3 id="userinfo"></h3>
 			</div>
 			
-			<div class="mui-card">
+			<div class="mui-card" id="wrong_list_card">
 				<ul class="mui-table-view">
-					<li class="mui-table-view-cell mui-collapse mui-active"> 
+					<li class="mui-table-view-cell mui-collapse" id="wrong_collapse_list"> 
 						<a class="mui-navigate-right" href="#">错题列表</a>
 						<ul class="mui-table-view" id="wrong-list">
 					
 						</ul>
+						<ul id="pagination" class="mui-pagination">
+					
+						</ul>
 					</li>
-				</ul>	
+				</ul>
 			</div>
 
 			<button type="button" class="mui-btn mui-btn-block mui-btn-danger" style="width: 90%; margin-left: 5%;" onclick="logout()">退出登录</button>
 		</div>
-		<script src="js/mui.js"></script>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/pageInit.js"></script>
 		<script>
+			// 初始化个人信息
 			document.getElementById('username').innerHTML = localStorage.getItem("username");
-			mui.ajax('http://lettle.cn:8089/user/wrong-list',{
-				headers: {
-					Authorization: localStorage.getItem("token")
-				},
-				data:{
-					page: 1
-				},
-				dataType:'json',//服务器返回json格式数据
-				type:'get',//HTTP请求类型
-				success:function(data){
-					if (data.code == "200") {
-						var table = document.getElementById("wrong-list");
-						var records = data.data.record;
-
-						for (var i=0; i<records.length; i++) {
-							table.innerHTML += "<li class='mui-table-view-cell'>" + records[i].num1 + " "+ records[i].op + " " + records[i].num2 + " = "+ records[i].ans +"</li>";
-						}
-						
-					}
-				},
-				error: function(xhr,type,errorThrown){
-					mui.toast("获取用户错题列表失败");
-				}
-			});
 			mui.ajax('http://lettle.cn:8089/user/rank',{
 				headers: {
 					Authorization: localStorage.getItem("token")
@@ -99,15 +94,42 @@
 					mui.toast("获取用户积分失败");
 				}
 			});
+
+			var init = false;
+			//定义有关分页的全局变量
+			var pageNum = 1; //当前页
+			var pages = 5 ; //总页数
+			var total = 100 ; //总数据数
+			var navigatepageSize = pages; //分页导航显示的页码数
+			var navigatepageNums = []; //当前页码导航
+
+			//初始化分页导航
+			function initMuiPagination(pages){
+				var table = document.getElementById("pagination");
+				var html = "";
+				html += '<li class="mui-previous mui-disabled"><a href="#">&laquo;</a></li>';
+				// html += '<li class="mui-active"><a href="#">'+pageNum+'</a></li>';
+				for(var i=1; i<=pages; i++){
+					if (i == pageNum) {
+						html += '<li class="mui-active"><a href="#">'+ i +'</a></li>';
+					} else {
+						html += '<li><a href="#">'+ i +'</a></li>';
+					}
+				}
+				html += '<li class="mui-next"><a href="#">&raquo;</a></li>';
+				table.innerHTML = html;
+			}
+
+
 			function logout() {
 				mui.confirm("是否要退出登录","退出确认",["确定","取消"],function (e) {
 					if(e.index == 0) {  
-						mui.ajax('http://lettle.cn:8089/user/logout',{
+						mui.ajax('http://lettle.cn:8089/logout',{
 							headers: {
 								Authorization: localStorage.getItem("token")
 							},
 							dataType:'json',//服务器返回json格式数据
-							type:'get',//HTTP请求类型
+							type:'post',//HTTP请求类型
 							success:function(data){
 								if (data.code == "200") {
 									if (e.index == 0) {
@@ -123,12 +145,101 @@
 								}
 							}
 						});
-						localStorage.removeItem("token");
-						localStorage.removeItem("username");
+						// localStorage.removeItem("token");
+						// localStorage.removeItem("username");
+						localStorage.clear();
 					}else{  
 						//取消  
 					} 
 				}, 'div');
+			}
+			
+			(function($) {
+				$('.mui-pagination').on('tap', 'a', function() {
+					var li = this.parentNode;
+					var classList = li.classList;
+					if (!classList.contains('mui-active') && !classList.contains('mui-disabled')) {
+						var active = li.parentNode.querySelector('.mui-active');
+						if (classList.contains('mui-previous')) {//previous
+							if (active) {
+								var previous = active.previousElementSibling;
+								// console.log('previous', previous);
+								if (previous && !previous.classList.contains('mui-previous')) {
+									$.trigger(previous.querySelector('a'), 'tap');
+								} else {
+									// classList.add('mui-disabled');
+								}
+							}
+						} else if (classList.contains('mui-next')) {//next
+							if (active) {
+								var next = active.nextElementSibling;
+								if (next && !next.classList.contains('mui-next')) {
+									$.trigger(next.querySelector('a'), 'tap');
+								} else {
+									// classList.add('mui-disabled');
+								}
+							}
+						} else {//page
+							active.classList.remove('mui-active');
+							classList.add('mui-active');
+							pageNum = parseInt(this.innerText);
+							var previousPageElement = li.parentNode.querySelector('.mui-previous');
+							var nextPageElement = li.parentNode.querySelector('.mui-next');
+							previousPageElement.classList.remove('mui-disabled');
+							nextPageElement.classList.remove('mui-disabled');
+							if (pageNum <= 1) {
+								previousPageElement.classList.add('mui-disabled');
+							} else if (pageNum >= pages) {
+								nextPageElement.classList.add('mui-disabled');
+							}
+
+							document.getElementById("wrong-list").innerHTML = "";
+							getWrongList();
+						}
+					}
+				});
+
+				$('#wrong_collapse_list').on('tap', 'a', function() {
+					if (!init) {
+						getWrongList();
+						console.log(pages);
+						initMuiPagination(pages);
+						init = true;
+					}
+				});
+				
+
+			})(mui); 
+
+			function getWrongList()
+			{
+				mui.ajax('http://lettle.cn:8089/user/wrong-list',{
+					headers: {
+						Authorization: localStorage.getItem("token")
+					},
+					data:{
+						page: pageNum
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					async:false,
+					success:function(data){
+						if (data.code == "200") {
+							var table = document.getElementById("wrong-list");
+							var records = data.data.record;
+
+							pages = data.data.total_page;
+							navigatepageSize = pages;
+
+							for (var i=0; i<records.length; i++) {
+								table.innerHTML += "<li class='mui-table-view-cell'>" + records[i].num1 + " "+ records[i].op + " " + records[i].num2 + " = "+ records[i].ans +"</li>";
+							}
+						}
+					},
+					error: function(xhr,type,errorThrown){
+						mui.toast("获取用户错题列表失败");
+					}
+				});
 			}
 		</script>
 	</body>
