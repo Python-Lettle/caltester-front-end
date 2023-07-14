@@ -125,6 +125,17 @@
 		<script src="js/mui.min.js"></script>
 		<!-- <script src="js/mui.enterfocus.js"></script> -->
 		<script>
+			mui.back = function() {
+				mui.openWindow({
+					url:"index.html",
+					id:"index",
+					show:{
+						autoShow:true,//页面loaded事件发生后自动显示，默认为true
+						aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
+					}
+				});
+			}
+
 			if (localStorage.getItem("regsuccess") != null) {
 				mui.toast("注册成功");
 			}
@@ -169,6 +180,10 @@
 				      aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
 				    }
 				});
+			});
+
+			mui("#forgetPassword")[0].addEventListener('click', function() {
+				mui.toast("请联系管理员进行密码修改");
 			});
 		</script>
 	</body>
