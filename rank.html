@@ -33,6 +33,7 @@
 
 		<div class="mui-content">
 			<h4 style="text-align: center;" id="myrank">我的排名: </h2>
+			<h4 style="text-align: center;" id="myscore">我的积分: </h2>
 			<div class="mui-card">
                 <ul class="mui-table-view" id="rank-list">
 					
@@ -55,12 +56,15 @@
 					if (data.code == "200") {
 						var table = document.getElementById("rank-list");
 						var records = data.data.rank;
+						var own_rank = data.data.own_rank;
+						var own_points = data.data.own_points;
 
 						for (var i=0; i<records.length; i++) {
 							table.innerHTML += "<li class='mui-table-view-cell playerinfo'>" + (i+1) + ".  " + records[i].username + " : " + records[i].points +"</li>";
 						}
 						
-						document.getElementById("myrank").innerText += '';
+						document.getElementById("myrank").innerText += own_rank;
+						document.getElementById("myscore").innerText += own_points;
 					}
 				},
 				error: function(xhr,type,errorThrown){

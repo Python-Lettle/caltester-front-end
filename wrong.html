@@ -25,7 +25,7 @@
 					<span></span>
 				</div>
 				<h1 style="font-size:80px;" id="question"></h1> 
-				<input type="text" class="mui-input-clear" placeholder="结果"
+				<input type="number" class="mui-input-clear" placeholder="结果"
 					style="margin-top: 20px;" id="answer">
 				<button class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-top: 20px; margin-bottom: 20px;"
 					id="submit_num">确定</button>
@@ -44,6 +44,7 @@
 		<script>window.FastClick = true;</script>
 		<script type="text/javascript" src="js/jquery-3.6.4.min.js"></script>
 		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/util.js"></script>
 		<script type="text/javascript" src="js/pageInit.js"></script>
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<script type="text/javascript" charset="utf-8">
@@ -145,16 +146,6 @@
 					case "/": return "÷";
 				}
 				return name;
-			}
-
-			function trimAll(ele){
-				if(typeof ele === 'string'){
-				return ele.split(/[\t\r\f\n\s]*/g).join('');
-					
-				}else{
-					console.error(`${typeof ele} is not the expected type, but the string type is expected`)
-				}
-			
 			}
 
 		</script>
