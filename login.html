@@ -4,8 +4,8 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-		<title>登录-少儿数学计算</title>
+		<meta http-equiv="Content-Security-Policy">
+		<title>登录-学习辅助系统</title>
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<style>
 			.area {
@@ -96,8 +96,8 @@
 		<div class="mui-content">
 			<form id='login-form' class="mui-input-group">
 				<div class="mui-input-row">
-					<label>账号</label>
-					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
+					<label>邮箱</label>
+					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入邮箱">
 				</div>
 				<div class="mui-input-row">
 					<label>密码</label>
@@ -124,69 +124,8 @@
 			</div>
 		</div>
 		<script src="js/mui.min.js"></script>
-		<!-- <script src="js/mui.enterfocus.js"></script> -->
-		<script>
-			mui.back = function() {
-				mui.openWindow({
-					url:"index.html",
-					id:"index",
-					show:{
-						autoShow:true,//页面loaded事件发生后自动显示，默认为true
-						aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
-					}
-				});
-			}
-
-			if (localStorage.getItem("regsuccess") != null) {
-				mui.toast("注册成功");s
-			}
-			localStorage.removeItem("regsuccess");
-			mui("#login")[0].addEventListener('click', function() {
-				mui.ajax('http://lettle.cn:8089/login',{
-					data:{
-						username: mui("#account")[0].value,
-						password: mui("#password")[0].value
-					},
-					dataType:'json',//服务器返回json格式数据
-					type:'post',//HTTP请求类型
-					success:function(data){
-						if (data.code == "200") {
-							localStorage.setItem("token",data.token);
-							localStorage.setItem("username",mui("#account")[0].value);
-							mui.openWindow({
-							    url:"index.html",
-							    id:"index",
-							    show:{
-							      autoShow:true,//页面loaded事件发生后自动显示，默认为true
-							      aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
-							    }
-							});
-						} else  {
-							mui.toast(data.msg);
-						}
-						
-					},
-					error: function(xhr,type,errorThrown){
-						mui.toast("与服务器通信失败");
-					}
-				});
-			});
-			
-			mui("#reg")[0].addEventListener('click', function() {
-				mui.openWindow({
-				    url:"reg.html",
-				    id:"reg",
-				    show:{
-				      autoShow:true,//页面loaded事件发生后自动显示，默认为true
-				      aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
-				    }
-				});
-			});
-
-			mui("#forgetPassword")[0].addEventListener('click', function() {
-				mui.toast("请联系管理员进行密码修改");
-			});
-		</script>
+		<script src="js/pageJS/config.js"></script>
+		<script type="text/javascript" src="js/pageJS/login.js"></script>
 	</body>
 
 </html>

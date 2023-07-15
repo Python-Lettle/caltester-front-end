@@ -29,7 +29,7 @@ mui("#reg")[0].addEventListener('tap', function(event) {
         mui.alert("密码长度小于8,请设置更长的密码", "注册信息有误", "确定", function() {}, 'div');
         return;
     }
-    $.ajax('http://lettle.cn:8089/register',{
+    $.ajax(HOSTNAME + '/register',{
         data:{
             "email" : emailBox.value,
             "vcode" : codeBox.value,
@@ -70,7 +70,7 @@ function sendEmail() {
     }
 
     if (sendEmailFlag == true) {
-        mui.ajax('http://lettle.cn:8089/register-vcode',{
+        mui.ajax(HOSTNAME + '/register-vcode',{
             data:{
                 "email": mui("#email")[0].value
             },

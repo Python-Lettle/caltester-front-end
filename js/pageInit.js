@@ -1,5 +1,9 @@
+// 此脚本附带登录验证，只有需要登录的页面才可调用此js
+
 mui.init({swipeBack:true});
 var token = localStorage.getItem("token");
+
+// token 验证， 若未登录则跳回login页面
 if (token == null) {
     mui.openWindow({
         url:"login.html",
