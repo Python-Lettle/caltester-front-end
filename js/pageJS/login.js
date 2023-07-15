@@ -56,5 +56,13 @@ mui("#reg")[0].addEventListener('click', function() {
 });
 
 mui("#forgetPassword")[0].addEventListener('click', function() {
-	mui.toast("请联系管理员进行密码修改");
+	mui.openWindow({
+		url:"forget.html",
+		id:"forget",
+		show:{
+		  autoShow:true,//页面loaded事件发生后自动显示，默认为true
+		  aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
+		}
+	});
 });
+
