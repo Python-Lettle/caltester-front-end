@@ -68,7 +68,7 @@ function sendEmail() {
     }
 
     if (sendEmailFlag == true) {
-        mui.ajax(HOSTNAME + '/register-vcode',{
+        mui.ajax(HOSTNAME + '/forget-vcode',{
             data:{
                 "email": mui("#email")[0].value
             },
