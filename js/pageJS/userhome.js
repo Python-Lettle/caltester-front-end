@@ -1,5 +1,6 @@
 // 初始化个人信息
-document.getElementById('username').innerHTML = localStorage.getItem("username");
+document.getElementById('username').innerHTML = localStorage.getItem("username") + document.getElementById('username').innerHTML;
+document.getElementById("userinfo").innerHTML += "<p>ID: " + localStorage.getItem("userid") + "</p>";
 mui.ajax(HOSTNAME + '/user/points',{
 	headers: {
 		Authorization: localStorage.getItem("token")
@@ -8,7 +9,7 @@ mui.ajax(HOSTNAME + '/user/points',{
 	type:'get',//HTTP请求类型
 	success:function(data){
 		if (data.code == "200") {
-			document.getElementById("userinfo").innerHTML = "积分: " + data.points;
+			document.getElementById("userinfo").innerHTML += "<p>积分: " + data.points + "</p>";
 		}
 	},
 	error: function(xhr,type,errorThrown){
@@ -44,7 +45,53 @@ function initMuiPagination(pages){
 	table.innerHTML = html;
 }
 
+// 修改用户名按钮
+var modifyUnameFlag = false;
+var unameBox = document.getElementById("username");
+var modifyInputBox = document.getElementById("uname_modify");
+var modifyBtn = document.getElementById("modifyBtn");
+function modifyUsername() {
+	if (modifyUnameFlag == false) {
+		// 切换外观显示
+		modifyInputBox.style.setProperty("display", "block");
+		unameBox.style.setProperty("display", "none");
+		modifyBtn.innerHTML = "保存用户名";
+		modifyInputBox.value = unameBox.innerHTML;
+		
+		modifyUnameFlag = true;
+	} else {
+		// 切换外观显示
+		modifyInputBox.style.setProperty("display", "none");
+		unameBox.style.setProperty("display", "block");
+		modifyBtn.innerHTML = "修改用户名";
+		
+		// 保存用户名
+		var newUsername = modifyInputBox.value;
+		if (newUsername != "") {
+			mui.ajax(HOSTNAME + '/user/change-username',{
+				headers: {
+					Authorization: localStorage.getItem("token")
+				},
+				data: {
+					"userid" : localStorage.getItem("userid"),
+					"username" : modifyInputBox.value
+				},
+				dataType:'json',//服务器返回json格式数据
+				type:'post',//HTTP请求类型
+				success:function(data){
+					if (data.code == "200") {
+						localStorage.setItem("username", data.username);
+						unameBox.innerHTML = localStorage.getItem("username");
+					}
+				}
+			});
+		}
+		
+		modifyUnameFlag = false;
+	}
+}
 
+// 退出登录按钮
 function logout() {
 	mui.confirm("是否要退出登录","退出确认",["确定","取消"],function (e) {
 		if(e.index == 0) {  
@@ -151,6 +198,17 @@ function getWrongList()
 		},
 		error: function(xhr,type,errorThrown){
 			mui.toast("获取用户错题列表失败");
+		}
+	});
+}
+
+function modifyPassword() {
+	mui.openWindow({
+		url:"change.html",
+		id:"change",
+		show:{
+		  autoShow:true,//页面loaded事件发生后自动显示，默认为true
+		  aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
 		}
 	});
 }

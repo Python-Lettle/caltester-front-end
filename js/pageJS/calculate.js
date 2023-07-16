@@ -1,6 +1,8 @@
+// 页面初始化
 mui.init({swipeBack:true});
+// 登录检测：未登录则跳转到登录页面
 var token = localStorage.getItem("token");
-if (token == null) {
+if (token == 3) {
 	mui.openWindow({
 		url:"login.html",
 		id:"login",
@@ -90,6 +92,7 @@ mui("#submit_num")[0].addEventListener('click', function(e) {
 					} else if (data.code == 30001) {
 						mui.alert(data.msg, "提交失败", "确定",  function() {}, 'div');
 					}
+					getQuestions();
 				}
 			});
 			question_index = 0;
@@ -111,7 +114,7 @@ function showQuestion() {
 		question_data.questions[question_index].Num2;
 }
 
-// 获取一些题目
+// 获取一些题目,并自动调用显示新的题目
 function getQuestions() {
 	mui.ajax(HOSTNAME + '/user/question',{
 		data:{

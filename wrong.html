@@ -47,6 +47,7 @@
 		<script type="text/javascript" src="js/util.js"></script>
 		<script type="text/javascript" src="js/pageInit.js"></script>
 		<link href="css/mui.min.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/pageJS/config.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			var list = document.querySelector('.mui-table-view.mui-table-view-radio');
 			// 获取到的题目信息
@@ -69,7 +70,7 @@
 
 					// 是否可以提交一批答案
 					if (question_index >= total_question_num) {
-						mui.ajax('http://lettle.cn:8089/user/wrong-judge',{
+						mui.ajax(HOSTNAME + '/user/wrong-judge',{
 							data:{
 								answers: JSON.stringify(answers)
 							},
@@ -112,7 +113,7 @@
 			
 			// 获取一些题目
 			function getQuestions() {
-				mui.ajax('http://lettle.cn:8089/user/wrong-redo',{
+				mui.ajax(HOSTNAME + '/user/wrong-redo',{
 					headers: {
 						Authorization: localStorage.getItem("token")
 					},

@@ -22,7 +22,10 @@ mui("#login")[0].addEventListener('click', function() {
 		dataType:'json',//服务器返回json格式数据
 		type:'post',//HTTP请求类型
 		success:function(data){
-			if (data.code == "200") {
+			console.log(data.info);
+			if (data.code == 200) {
+				localStorage.setItem("username",data.info.username);
+				localStorage.setItem("userid",data.info.userid);
 				localStorage.setItem("token",data.token);
 				localStorage.setItem("email",mui("#account")[0].value);
 				mui.openWindow({

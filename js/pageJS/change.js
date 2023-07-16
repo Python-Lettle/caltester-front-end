@@ -28,11 +28,14 @@ mui("#reg")[0].addEventListener('tap', function(event) {
         mui.alert("密码长度小于8,请设置更长的密码", function() {}, 'div');
         return;
     }
-    $.ajax(HOSTNAME + '/change-password',{
+    $.ajax(HOSTNAME + '/user/change-password',{
+		headers : {
+			Authorization: localStorage.getItem("token")
+		},
         data:{
-			"old-password":mui("password_old")[0].value,
-            "password": mui("#password")[0].value,
-            "re-password": mui("#password_confirm")[0].value
+			"old-password" : passwordOld.value,
+            "password" :passwordBox.value,
+            "re-password": passwordConfirmBox.value
         },
         type:'post',//HTTP请求类型
         success:function(data){

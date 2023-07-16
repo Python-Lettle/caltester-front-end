@@ -5,46 +5,7 @@
 		<title>用户中心-学习辅助系统</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="css/mui.css" rel="stylesheet" />
-
-		<style>
-			.mui-card #username {
-				padding: 0px;
-				margin: 0px;
-				width: 100%;
-				/*border-top: solid;*/
-				text-align: center;
-				/*设置inline-height属性可以让div里面的文字垂直居中*/
-				/*line-height: 70px;*/
-				font-size: 30px;
-			}
-
-			.mui-card #userinfo {
-				margin-left: 3%;
-			}
-
-			.mui-card .title {
-				text-align: center;
-				font-size: 30px;
-			}
-
-			.mui-card #exit {
-				width: auto;
-			}
-
-			.mui-btn {
-				margin-top: 20px;
-			}
-
-			#wrong_collapse_list {
-				text-align: center;
-			}
-
-			#pagination {
-				display: inline-block;
-				margin: auto;
-				margin-top: 20px;
-			}
-		</style>
+		<link href="css/pageCss/userhome.css" rel="stylesheet"/>
 	</head>
 
 	<body>
@@ -54,8 +15,23 @@
 		</header>
 		<div class="mui-content">
 			<div class="mui-card">
-				<h1 id="username"></h1>
+				<div>
+					<h1 id="username"></h1>
+					<input style="font-size: 20px;display: none;text-align: center;" id="uname_modify" type="text"/>
+				</div>
 				<h3 id="userinfo"></h3>
+			</div>
+			
+			<div class="mui-card">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell mui-collapse">
+						<a class="mui-navigate-right" href="#">修改信息</a>
+						<div class="mui-collapse-content"> 
+							<div style="width: 7rem;" onclick="modifyUsername();" class="mui-btn mui-btn-blue mui-btn-outlined" id="modifyBtn">修改用户名</div>
+							<div style="width: 7rem;" onclick="modifyPassword();" class="mui-btn mui-btn-red mui-btn-outlined" id="modifyBtn">修改密码</div>
+						</div>
+					</li>
+				</ul>
 			</div>
 			
 			<div class="mui-card" id="wrong_list_card">

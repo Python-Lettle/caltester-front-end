@@ -42,8 +42,9 @@
 		</div>
 		<script src="js/mui.min.js"></script>
 		<script src="js/pageInit.js"></script>
+		<script src="js/pageJS/config.js"></script>
 		<script>
-			mui.ajax('http://lettle.cn:8089/user/rank',{
+			mui.ajax(HOSTNAME + '/user/rank',{
 				headers: {
 					Authorization: localStorage.getItem("token")
 				},
@@ -60,7 +61,7 @@
 						var own_points = data.data.own_points;
 
 						for (var i=0; i<records.length; i++) {
-							table.innerHTML += "<li class='mui-table-view-cell playerinfo'>" + (i+1) + ".  " + records[i].username + " : " + records[i].points +"</li>";
+							table.innerHTML += "<li class='mui-table-view-cell playerinfo'>" + (i+1) + ".  " + records[i].username + "(id:" + records[i].userid + ")" + " : " + records[i].points +"</li>";
 						}
 						
 						document.getElementById("myrank").innerText += own_rank;

@@ -1,0 +1,41 @@
+.mui-card #username {
+	padding: 0px;
+	margin: 0px;
+	width: 100%;
+	/*border-top: solid;*/
+	text-align: center;
+	/*设置inline-height属性可以让div里面的文字垂直居中*/
+	/*line-height: 70px;*/
+	font-size: 30px;
+}
+
+.mui-card #userinfo {
+	margin-left: 3%;
+}
+
+.mui-card .title {
+	text-align: center;
+	font-size: 30px;
+}
+
+.mui-card #exit {
+	width: auto;
+}
+
+.mui-btn {
+	margin-top: 20px;
+}
+
+#wrong_collapse_list {
+	text-align: center;
+}
+
+#pagination {
+	display: inline-block;
+	margin: auto;
+	margin-top: 20px;
+}
+
+#userinfo p{
+	font-size: 15px;
+}
