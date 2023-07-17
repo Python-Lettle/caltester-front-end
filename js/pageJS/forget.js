@@ -40,10 +40,10 @@ mui("#reg")[0].addEventListener('tap', function(event) {
             if (data.code != 200) {
                 mui.alert(data.msg, "信息有误", function() {}, 'div');
             } else {
-                localStorage.setItem("regsuccess", "1");
+                localStorage.clear();
                 mui.openWindow({
-                    url:"forget.html",
-                    id:"forget",
+                    url:"login.html",
+                    id:"login",
                     show:{
                         autoShow:true,//页面loaded事件发生后自动显示，默认为true
                         aniShow: "slide-in-right"//页面显示动画，默认为”slide-in-right“；
